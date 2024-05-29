@@ -26,28 +26,29 @@ class Place(db.Model):
 
 
 # add 2 records to db
-place1 = Place(place_name="Park Józefa Polińskiego",
-               visit_date="27.05.2024",
-               rating="4/5",
-               google_location="https://maps.app.goo.gl/81N1jDHhRxkPpTWj9")
+# place1 = Place(place_name="Park Józefa Polińskiego",
+#                visit_date="27.05.2024",
+#                rating="4/5",
+#                google_location="https://maps.app.goo.gl/81N1jDHhRxkPpTWj9")
+#
+# place2 = Place(place_name="Park Obwodu Praga Armii Krajowej",
+#                visit_date="26.05.2024",
+#                rating="3/5",
+#                google_location="https://maps.app.goo.gl/MaAYKqBH8tEkfYjr6")
 
-place2 = Place(place_name="Park Obwodu Praga Armii Krajowej",
-               visit_date="26.05.2024",
-               rating="3/5",
-               google_location="https://maps.app.goo.gl/MaAYKqBH8tEkfYjr6")
 
-
-with app.app_context():
-    db.create_all()
-
-    db.session.add_all([place1, place2])
-    db.session.commit()
+# with app.app_context():
+#     db.create_all()
+#
+#     db.session.add_all([place1, place2])
+#     db.session.commit()
 
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    places = Place.query.all()
+    return render_template("index.html", places=places)
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

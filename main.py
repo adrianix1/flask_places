@@ -1,12 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped, mapped_column
+from flask import request
+from flask_wtf import FlaskForm
+from wtforms import StringField, DateField, IntegerField, SubmitField
+from wtforms.validators import DataRequired, URL, NumberRange
 
 app = Flask(__name__)
 Bootstrap(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///place.db"
+app.config['SECRET_KEY'] = 'very_secret_key'
 
 
 class Base(DeclarativeBase):
@@ -23,6 +28,14 @@ class Place(db.Model):
     visit_date: Mapped[str]
     rating: Mapped[str]
     google_location: Mapped[str]
+
+
+class AddForm(FlaskForm):
+    place = StringField('Place name', [DataRequired()])
+    date = DateField('Date of visit', [DataRequired()])
+    rating = IntegerField('Rating 1-5', [DataRequired(), NumberRange(1, 5)])
+    location = StringField('Google location URL', [DataRequired(), URL()])
+    submit_button = SubmitField('Submit Form')
 
 
 # add 2 records to db
@@ -48,6 +61,15 @@ class Place(db.Model):
 def home():
     places = Place.query.all()
     return render_template("index.html", places=places)
+
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_data():
+    form = AddForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        # add new place object to db
+        return redirect("/", code=200)
+    return render_template("add.html", form=form)
 
 
 if __name__ == '__main__':

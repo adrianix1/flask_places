@@ -67,7 +67,15 @@ def home():
 def add_data():
     form = AddForm()
     if request.method == 'POST' and form.validate_on_submit():
-        # add new place object to db
+        new_entry = Place(
+            place_name=form.place.data,
+            visit_date=form.date.data.strftime("%d.%m.%Y"),
+            rating=str(form.rating.data)+"/5",
+            google_location=form.location.data
+        )
+        with app.app_context():
+            db.session.add(new_entry)
+            db.session.commit()
         return redirect("/", code=200)
     return render_template("add.html", form=form)
 

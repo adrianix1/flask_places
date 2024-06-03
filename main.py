@@ -80,5 +80,14 @@ def add_data():
     return render_template("add.html", form=form)
 
 
+@app.route("/del/<id>")
+def delete(id):
+    with app.app_context():
+        to_del = Place.query.get(id)
+        db.session.delete(to_del)
+        db.session.commit()
+    return redirect("/", code=200)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

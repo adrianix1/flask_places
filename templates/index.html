@@ -9,21 +9,23 @@ Index
 <table class="table table-sm">
   <thead>
     <tr>
-      <th scope="col">#</th>
+      <th scope="col">Id</th>
       <th scope="col">Place name</th>
       <th scope="col">Visit date</th>
       <th scope="col">Rating</th>
       <th scope="col">Location</th>
+      <th scope="col">Delete</th>
     </tr>
   </thead>
   <tbody>
     {% for place in places %}
     <tr>
-      <th scope="row">{{place.id}}</th>
-      <td>{{place.place_name}}</td>
-      <td>{{place.visit_date}}</td>
-      <td>{{place.rating}}</td>
-      <td>{{place.google_location}}</td>
+      <th scope="row">{{ place.id }}</th>
+      <td>{{ place.place_name }}</td>
+      <td>{{ place.visit_date }}</td>
+      <td>{{ place.rating }}</td>
+      <td><a href="{{ place.google_location }}">{{ place.google_location }}</a></td>
+      <td><a href="{{ url_for('delete', id=place.id) }}">🗑</a></td>
     </tr>
     {% endfor %}
   </tbody>

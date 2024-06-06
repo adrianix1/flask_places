@@ -15,6 +15,7 @@ Index
       <th scope="col">Rating</th>
       <th scope="col">Location</th>
       <th scope="col">Delete</th>
+      <th scope="col">Update</th>
     </tr>
   </thead>
   <tbody>
@@ -26,6 +27,7 @@ Index
       <td>{{ place.rating }}</td>
       <td><a href="{{ place.google_location }}">{{ place.google_location }}</a></td>
       <td><a href="{{ url_for('delete', id=place.id) }}">🗑</a></td>
+      <td><a href="{{ url_for('update', id=place.id) }}" class="button">📝</a></td>
     </tr>
     {% endfor %}
   </tbody>

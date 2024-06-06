@@ -1,9 +1,7 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped, mapped_column
-from flask import request
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, URL, NumberRange
@@ -38,6 +36,10 @@ class AddForm(FlaskForm):
     submit_button = SubmitField('Submit Form')
 
 
+class RatePlaceForm(FlaskForm):
+    new_rating = StringField('New rating, eg 3', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 # add 2 records to db
 # place1 = Place(place_name="Park Józefa Polińskiego",
 #                visit_date="27.05.2024",
@@ -48,8 +50,8 @@ class AddForm(FlaskForm):
 #                visit_date="26.05.2024",
 #                rating="3/5",
 #                google_location="https://maps.app.goo.gl/MaAYKqBH8tEkfYjr6")
-
-
+#
+#
 # with app.app_context():
 #     db.create_all()
 #
@@ -87,6 +89,17 @@ def delete(id):
         db.session.delete(to_del)
         db.session.commit()
     return redirect("/", code=200)
+
+
+@app.route("/update/<id>", methods=['GET', 'POST'])
+def update(id):
+    form = RatePlaceForm()
+    place = db.session.execute(db.select(Place).filter_by(id=id)).scalar_one()
+    if request.method == 'POST' and form.validate():
+        place.rating = str(request.form['new_rating']) + "/5"
+        db.session.commit()
+        return redirect(url_for('home'), code=200)
+    return render_template("edit.html", form=form, place_name=place.place_name)
 
 
 if __name__ == '__main__':
